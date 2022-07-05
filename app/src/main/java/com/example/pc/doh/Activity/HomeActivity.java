@@ -126,7 +126,7 @@ public class HomeActivity extends AppCompatActivity
         checker = new InternetCheck(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Assessment");
+        getSupportActionBar().setTitle("Assessment List");
 
         if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
             finish();
