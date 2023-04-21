@@ -1382,14 +1382,7 @@ public class HomeActivity extends AppCompatActivity
                                     String uid = jsonArray.getJSONObject(o).getString("uid");
                                     JSONArray combined = jsonArray.getJSONObject(o).getJSONArray("assesscombined");
                                     //insert combined
-                                /*
-                                if(!checkConflict(combined)){
 
-
-                                }else{
-                                    checkCon = true;
-                                    break;
-                                }*/
 
                                     if(combined.length()>0){
                                         for(int com=0;com<combined.length();com++){
@@ -1558,6 +1551,9 @@ public class HomeActivity extends AppCompatActivity
                     }else{
                         cn++;
                     }
+
+                    File file = new File(paths[i], filename[f]);
+                    boolean deleted = file.delete();
                 }
                 if(cn == 11){ checkmerge++; }
             }
@@ -1589,6 +1585,9 @@ public class HomeActivity extends AppCompatActivity
             AlertDialog dialog3 = message.create();
             dialog3.setIcon(R.drawable.doh);
             dialog3.show();
+
+
+
 
         }catch (Exception ex){
             pdialog.dismiss();
@@ -2207,8 +2206,10 @@ public class HomeActivity extends AppCompatActivity
                     }else{
                         cn++;
                     }
-                }
 
+                    File file = new File(paths[i], filename[f]);
+                    boolean deleted = file.delete();
+                }
 
                 if(cn == 11){checkmerge++;}
             }
@@ -2787,10 +2788,11 @@ public class HomeActivity extends AppCompatActivity
                                 Map<String,String> params = new HashMap<>();
                                 params.put("apptype","LTO");
                                 params.put("data",appidd.toString());
-                                //Log.d("paramss",params.toString());
+                                Log.d("params",params.toString());
                                 return params;
                             }
                         };
+
                         RequestQueue requestQueue = Volley.newRequestQueue(this);
                         requestQueue.add(request);
 
@@ -3089,7 +3091,7 @@ public class HomeActivity extends AppCompatActivity
                                 Map<String,String> params = new HashMap<>();
                                 params.put("apptype","MON");
                                 params.put("data",appidd.toString());
-                                //Log.d("paramss",params.toString());
+//                                Log.e("params",params.toString());
                                 return params;
                             }
                         };
