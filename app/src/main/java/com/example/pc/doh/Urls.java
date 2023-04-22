@@ -4,8 +4,8 @@ public class Urls {
     // http://doholrs.infoadvance.com.ph/
     //public static String server = "https://doholrs.rightapps.ph/";
 //    public static String  server = "https://olrs.rightapps.solutions/";
-    public static String  server = "https://olrs.doh.gov.ph/";
-//    public static String  server = "https://idlis.infoadvance.com.ph/";
+//    public static String  server = "https://olrs.doh.gov.ph/";
+    public static String  server = "https://idlis.infoadvance.com.ph/";
     //public static String server = "http://192.168.254.104/doholrs/";
     //public static String employee = server + "employee/true";
     //public static String employee = server + "samplepadogs/true";
