@@ -4,8 +4,8 @@ public class Urls {
     // http://doholrs.infoadvance.com.ph/
     //public static String server = "https://doholrs.rightapps.ph/";
 //    public static String  server = "https://olrs.rightapps.solutions/";
-//    public static String  server = "https://olrs.doh.gov.ph/";
-    public static String  server = "https://idlis.infoadvance.com.ph/";
+    public static String  server = "https://olrs.doh.gov.ph/beta/";
+//    public static String  server = "https://idlis.infoadvance.com.ph/";
     //public static String server = "http://192.168.254.104/doholrs/";
     //public static String employee = server + "employee/true";
     //public static String employee = server + "samplepadogs/true";
@@ -16,16 +16,18 @@ public class Urls {
     public static String evaluation = server + "employee/dashboard/processflow/evaluation/true";
     public static String evaluationshowassessment = server + "employee/dashboard/processflow/floorPlan/ShowAssessmentsMobile/";
     public static String monitor = server + "employee/dashboard/others/monitoring/mobile/inspection/true";
-    public static String getassessment = server + "employee/dashboard/processflow/assessment/";
-    public static String getparts = server + "employee/dashboard/processflow/parts/";
-    public static String getpartsNew = server + "employee/dashboard/processflow/parts/new/";
-    public static String getheaderone = server + "employee/dashboard/processflow/HeaderOne/";
-    public static String getheaderoneRegfac = server + "employee/dashboard/processflow/HeaderOne/regfac/";
-    public static String getheadertwo = server + "employee/dashboard/processflow/HeaderTwo/";
-    public static String getheaderthree = server + "employee/dashboard/processflow/HeaderThree/";
-    public static String getassessmentdet = server + "employee/dashboard/processflow/ShowAssessments/";
-    public static String getassessmentdetRegfac = server + "employee/dashboard/processflow/ShowAssessments/regfac/";
-    public static String assess = server + "employee/dashboard/processflow/assessment/each/";
+
+    public static String getassessment = server + "api/employee/dashboard/mprocessflow/assessment/";
+    public static String getparts = server + "api/employee/dashboard/mprocessflow/parts/";
+    public static String getpartsNew = server + "api/employee/dashboard/mprocessflow/parts/new/";
+    public static String getheaderone = server + "api/employee/dashboard/mprocessflow/HeaderOne/";
+    public static String getheaderoneRegfac = server + "api/employee/dashboard/mprocessflow/HeaderOne/regfac/";
+    public static String getheadertwo = server + "api/employee/dashboard/mprocessflow/HeaderTwo/";
+    public static String getheaderthree = server + "api/employee/dashboard/mprocessflow/HeaderThree/";
+    public static String getassessmentdet = server + "api/employee/dashboard/mprocessflow/ShowAssessments/";
+    public static String getassessmentdetRegfac = server + "api/employee/dashboard/mprocessflow/ShowAssessments/regfac/";
+    public static String assess = server + "api/employee/dashboard/mprocessflow/assessment/each/";
+
     public static String evaluate = server + "employee/dashboard/processflow/evalution/each/";
     public static String getevaluation = server + "employee/dashboard/processflow/evalution/";
     public static String sendassess = server + "employee/dashboard/processflow/assessment/view/";

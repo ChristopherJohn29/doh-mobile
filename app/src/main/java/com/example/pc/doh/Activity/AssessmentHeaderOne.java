@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -167,14 +168,14 @@ public class AssessmentHeaderOne extends AppCompatActivity implements Navigation
 
 
 
-        get_headerone_offline();
+//        get_headerone_offline();
 
 
-//        if(checker.checkHasInternet()){
-//            get_headerone_online();
-//        }else{
-//            get_headerone_offline();
-//        }
+        if(checker.checkHasInternet()){
+            get_headerone_online();
+        }else{
+            get_headerone_offline();
+        }
 
         headerrv = findViewById(R.id.headerrv);
         hAdapter = new HeadersAdapter(this, list);
@@ -394,34 +395,36 @@ public class AssessmentHeaderOne extends AppCompatActivity implements Navigation
                             JSONObject obj = new JSONObject(response);
                             JSONArray head = obj.getJSONArray("head");
                             int countassess = 0;
-//                            if (db.checkDatas("tbl_assessment_headerone", "id", AssessmentPart.id)){
-//                                String[] ucolumns = {"json_data"};
-//                                String[] udata = {response};
-//                                if (db.update("tbl_assessment_headerone", ucolumns, udata, "appid",HomeActivity.appid)) {
-//                                    Log.d("updatedata", "update");
-//                                } else {
-//                                    Log.d("updatedata", "not update");
-//                                }
-//                            }else{
-//                                String[] dcolumns = {"json_data", "uid", "appid","id"};
-//                                String[] datas = {response, uid, HomeActivity.appid,AssessmentPart.id};
-//                                if (db.add("tbl_assessment_headerone", dcolumns, datas, "")) {
-//                                    Log.d("tbl_headerone", "added");
-//                                } else {
-//                                    Log.d("tbl_headerone", "not added");
-//                                }
-//                            }
+                            if (db.checkDatas("tbl_assessment_headerone", "id", AssessmentPart.id)){
+                                String[] ucolumns = {"json_data"};
+                                String[] udata = {response};
+                                if (db.update("tbl_assessment_headerone", ucolumns, udata, "appid",HomeActivity.appid)) {
+                                    Log.d("updatedata", "update");
+                                } else {
+                                    Log.d("updatedata", "not update");
+                                }
+                            }else{
+                                String[] dcolumns = {"json_data", "uid", "appid","id"};
+                                String[] datas = {response, uid, HomeActivity.appid,AssessmentPart.id};
+                                if (db.add("tbl_assessment_headerone", dcolumns, datas, "")) {
+                                    Log.d("tbl_headerone", "added");
+                                } else {
+                                    Log.d("tbl_headerone", "not added");
+                                }
+                            }
                             if(head.length()>0){
                                 for(int i =0;i<head.length();i++){
                                     String id = head.getJSONObject(i).getString("id");
                                     String desc =head.getJSONObject(i).getString("desc");
                                     String hid = db.get_tbl_assessment_header(HomeActivity.appid,uid,id,"1");
+                                    String asmt2desc ="";
+                                    String asmt2id = "";
                                     String assess = "false";
                                     if (db.checkDatas("tbl_save_assessment_header", "assessheadid", hid)){
                                         countassess++;
                                         assess = db.get_tbl_assessment_header_assess(HomeActivity.appid,uid,id,"1");
                                     }
-                                    //list.add(new Headers(id,desc, assess));
+                                    list.add(new Headers(id,desc, assess, asmt2desc, asmt2id));
                                 }
                             }else{
 
@@ -454,6 +457,9 @@ public class AssessmentHeaderOne extends AppCompatActivity implements Navigation
                 return params;
             }
         };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);

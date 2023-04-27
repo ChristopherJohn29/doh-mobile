@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -423,7 +424,7 @@ public class AssessmentPart extends AppCompatActivity implements View.OnClickLis
     }
     private void get_headerone_online(final String id){
         //Urls.getheaderone+HomeActivity.appid+"/"+id
-        Log.d("url",Urls.getheaderone+HomeActivity.appid);
+        Log.d("urlheaderone",Urls.getheaderone+HomeActivity.appid+"/"+id);
         StringRequest request = new StringRequest(Request.Method.POST, Urls.getheaderone+HomeActivity.appid+"/"+id
                 ,
                 new Response.Listener<String>() {
@@ -475,7 +476,7 @@ public class AssessmentPart extends AppCompatActivity implements View.OnClickLis
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Log.d("errorshowheaderone", error.toString());
                     }
                 }){
             @Override
@@ -486,6 +487,9 @@ public class AssessmentPart extends AppCompatActivity implements View.OnClickLis
                 return params;
             }
         };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
@@ -498,11 +502,17 @@ public class AssessmentPart extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onResponse(String response) {
                         Log.d("responsess",response);
+                        Log.d("sid",id);
+
+
                         try {
                             JSONObject obj = new JSONObject(response);
                             JSONObject data = obj.getJSONObject("data");
                             JSONArray head = obj.getJSONArray("head");
                             String sid = db.getsid(HomeActivity.appid,"",id);
+
+                            Log.d("sid", sid);
+
                             if (db.checkDatas("tbl_show_assessment", "sid",sid)){
                                 String[] ucolumns = {"json_data"};
                                 String[] udata = {response};
@@ -554,6 +564,8 @@ public class AssessmentPart extends AppCompatActivity implements View.OnClickLis
         sv.setVisibility(View.GONE);
         //+ HomeActivity.appid + "/" + HomeActivity.type
         Log.d("appid",HomeActivity.appid);
+        Log.d("parturl",Urls.getparts+HomeActivity.appid);
+        Log.d("uid",uid);
         StringRequest request = new StringRequest(Request.Method.POST, Urls.getparts+HomeActivity.appid,
                 new Response.Listener<String>() {
                     @Override
@@ -626,6 +638,7 @@ public class AssessmentPart extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
+                        Log.d("error", error.toString());
                     }
                 }){
             @Override
@@ -633,9 +646,13 @@ public class AssessmentPart extends AppCompatActivity implements View.OnClickLis
                 Map<String,String> params = new HashMap<>();
                 params.put("isMobile","dan");
                 params.put("uid",uid);
+                Log.d("params", String.valueOf(params));
                 return params;
             }
         };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);

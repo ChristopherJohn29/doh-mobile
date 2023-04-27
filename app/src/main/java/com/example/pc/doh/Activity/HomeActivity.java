@@ -49,6 +49,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -316,11 +317,12 @@ public class HomeActivity extends AppCompatActivity
                         try {
                             JSONObject obj = new JSONObject(response);
                             Log.d("assessresponse",response);
+                            Log.d("url",Urls.assessment+uid);
                             //changes
                             String[] columns = {"uid","json_data","type"};
                             String[] data = {uid,response,"assessment"};
                             if(db.checkLicensingDatas("tbl_assessment",uid,"assessment")){
-                                Log.d("checkdatas","found");
+                                Log.d("checkdatas","founds");
                                 String aid = db.getassesid(uid,"assessment");
                                 Log.d("assessid",aid);
                                 if(db.update("tbl_assessment",columns,data,"assessment_id",aid)){
@@ -337,32 +339,78 @@ public class HomeActivity extends AppCompatActivity
                                 }
                             }
 
-                            JSONArray jsonArray = obj.getJSONArray("data");
-                            if(obj.has("data")){
-                                //Log.d("datajson",jsonArray.toString());
-                                for(int i=0;i<jsonArray.length();i++){
-                                    String id = jsonArray.getJSONObject(i).getString("hfser_id");
-                                    String date = jsonArray.getJSONObject(i).getString("t_date");
-                                    String status = jsonArray.getJSONObject(i).getString("trns_desc");
-                                    String facilityname = jsonArray.getJSONObject(i).getString("facilityname");
-                                    String code = jsonArray.getJSONObject(i).getString("hfser_id") +"R"+ jsonArray.getJSONObject(i).getString("rgnid")+"-"+
-                                            jsonArray.getJSONObject(i).getString("appid");
-                                    String typefacility = jsonArray.getJSONObject(i).getString("hgpdesc");
-                                    if(typefacility.equals("")){
-                                        typefacility = "";
-                                    }
-                                    String appid = jsonArray.getJSONObject(i).getString("appid");
-                                    if(id.equals("LTO") || id.equals("COA")){
-                                        assesslist.add(new AssestmentModel(id,code,facilityname,typefacility,date,status,appid));
-                                    }
+                            Object intervention = obj.get("data");
 
+                            if (intervention instanceof JSONArray) {
+                                // It's an array
+                                JSONArray jsonArray = obj.getJSONArray("data");
+
+                                Log.d("datajson",jsonArray.toString());
+                                if(obj.has("data")){
+                                    //Log.d("datajson",jsonArray.toString());
+                                    for(int i=0;i<jsonArray.length();i++){
+
+                                            String id = jsonArray.getJSONObject(i).getString("hfser_id");
+                                            String date = jsonArray.getJSONObject(i).getString("t_date");
+                                            String status = jsonArray.getJSONObject(i).getString("trns_desc");
+                                            String facilityname = jsonArray.getJSONObject(i).getString("facilityname");
+                                            String code = jsonArray.getJSONObject(i).getString("hfser_id") +"R"+ jsonArray.getJSONObject(i).getString("rgnid")+"-"+
+                                                    jsonArray.getJSONObject(i).getString("appid");
+                                            String typefacility = jsonArray.getJSONObject(i).getString("hgpdesc");
+                                            if(typefacility.equals("")){
+                                                typefacility = "";
+                                            }
+                                            String appid = jsonArray.getJSONObject(i).getString("appid");
+                                            if(id.equals("LTO") || id.equals("COA")){
+                                                assesslist.add(new AssestmentModel(id,code,facilityname,typefacility,date,status,appid));
+                                            }
+                                    }
+                                    /*aAdapter.notifyDataSetChanged();*/
+                                    setAdapter();
+                                }else{
+                                    TextView lbl = findViewById(R.id.lblmessage);
+                                    lbl.setVisibility(View.VISIBLE);
                                 }
-                                /*aAdapter.notifyDataSetChanged();*/
-                               setAdapter();
-                            }else{
-                                TextView lbl = findViewById(R.id.lblmessage);
-                                lbl.setVisibility(View.VISIBLE);
                             }
+                            else if (intervention instanceof JSONObject) {
+                                // It's an object
+
+                                JSONObject jsonArray = obj.getJSONObject("data");
+
+                                Log.d("datajson",jsonArray.toString());
+                                if(obj.has("data")){
+                                    //Log.d("datajson",jsonArray.toString());
+                                    for(int i=0;i<jsonArray.length();i++){
+
+                                        if(jsonArray.has(String.valueOf(i))){
+                                            String id = jsonArray.getJSONObject(String.valueOf(i)).getString("hfser_id");
+                                            String date = jsonArray.getJSONObject(String.valueOf(i)).getString("t_date");
+                                            String status = jsonArray.getJSONObject(String.valueOf(i)).getString("trns_desc");
+                                            String facilityname = jsonArray.getJSONObject(String.valueOf(i)).getString("facilityname");
+                                            String code = jsonArray.getJSONObject(String.valueOf(i)).getString("hfser_id") +"R"+ jsonArray.getJSONObject(String.valueOf(i)).getString("rgnid")+"-"+
+                                                    jsonArray.getJSONObject(String.valueOf(i)).getString("appid");
+                                            String typefacility = jsonArray.getJSONObject(String.valueOf(i)).getString("hgpdesc");
+                                            if(typefacility.equals("")){
+                                                typefacility = "";
+                                            }
+                                            String appid = jsonArray.getJSONObject(String.valueOf(i)).getString("appid");
+                                            if(id.equals("LTO") || id.equals("COA")){
+                                                assesslist.add(new AssestmentModel(id,code,facilityname,typefacility,date,status,appid));
+                                            }
+                                        }
+                                    }
+                                    /*aAdapter.notifyDataSetChanged();*/
+                                    setAdapter();
+                                }else{
+                                    TextView lbl = findViewById(R.id.lblmessage);
+                                    lbl.setVisibility(View.VISIBLE);
+                                }
+
+
+
+                            }
+
+
 
                             if(assesslist.size()==0){
                                 lbl.setVisibility(View.VISIBLE);
@@ -2793,6 +2841,9 @@ public class HomeActivity extends AppCompatActivity
                             }
                         };
 
+                        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
                         RequestQueue requestQueue = Volley.newRequestQueue(this);
                         requestQueue.add(request);
 
@@ -2942,6 +2993,11 @@ public class HomeActivity extends AppCompatActivity
                                 return params;
                             }
                         };
+
+                        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
                         RequestQueue requestQueue = Volley.newRequestQueue(this);
                         requestQueue.add(request);
                     }
@@ -3095,6 +3151,10 @@ public class HomeActivity extends AppCompatActivity
                                 return params;
                             }
                         };
+
+                        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
                         RequestQueue requestQueue = Volley.newRequestQueue(this);
                         requestQueue.add(request);
                     }
@@ -3368,6 +3428,9 @@ public class HomeActivity extends AppCompatActivity
             }
         };
 
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
 
@@ -3415,6 +3478,9 @@ public class HomeActivity extends AppCompatActivity
                 return params;
             }
         };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);

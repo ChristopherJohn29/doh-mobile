@@ -606,6 +606,8 @@ public class ShowAssessment extends AppCompatActivity implements NavigationView.
         sv.setVisibility(View.GONE);
         String sid = db.getsid(HomeActivity.appid,"",hid);
         Cursor det = db.get_item("tbl_show_assessment", "sid", sid);
+        Log.d("sid", sid);
+        Log.d("sid", det.toString());
         boolean checkifcomplied = false;
         if (det != null && det.getCount() > 0) {
             det.moveToFirst();

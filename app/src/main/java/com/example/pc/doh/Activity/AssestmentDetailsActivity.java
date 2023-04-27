@@ -127,6 +127,7 @@ public class AssestmentDetailsActivity extends AppCompatActivity implements View
         if(HomeActivity.licensetype == "assessment"){
 
             Intent assessheader = new Intent(this,AssessmentPart.class);
+
             startActivity(assessheader);
             Animatoo.animateSlideLeft(AssestmentDetailsActivity.this);
 
