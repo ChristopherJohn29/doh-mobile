@@ -31,6 +31,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -400,6 +401,9 @@ public class AssessmentHeaderThree extends AppCompatActivity implements Navigati
                 return params;
             }
         };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);

@@ -552,6 +552,9 @@ public class AssessmentPart extends AppCompatActivity implements View.OnClickLis
             }
         };
 
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, 5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
     }
